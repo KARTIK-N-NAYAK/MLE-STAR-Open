@@ -1,6 +1,6 @@
 """Defines the prompts for debugging."""
 
-print("Defining prompts for debugging...")
+#print("Defining prompts for debugging...")
 
 BUG_SUMMARY_INSTR = """# Error report
 {bug}
@@ -30,4 +30,4 @@ BUG_REFINE_INSTR = """# Task description
 - Your response should only contain a single code block.
 - Do not use exit() function in the refined Python code."""
 
-print("Prompts for debugging defined.")
+#print("Prompts for debugging defined.")

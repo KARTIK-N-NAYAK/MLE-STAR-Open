@@ -84,3 +84,5 @@ htmlcov/
 *.swp
 *.swo
 *.orig
+
+mle-star-open/

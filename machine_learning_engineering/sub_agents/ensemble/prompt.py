@@ -1,6 +1,6 @@
 """Defines the prompts for the ensemble agent."""
 
-print("Defining prompts for ensemble agent...")
+#print("Defining prompts for ensemble agent...")
 
 INIT_ENSEMBLE_PLAN_INSTR = """# Introduction
 - You are a Kaggle grandmaster attending a competition.
@@ -65,4 +65,4 @@ ENSEMBLE_PLAN_REFINE_INSTR = """# Introduction
 - There should be no additional headings or text in your response.
 - Plan should not modify the original solutions too much since exeuction error can occur."""
 
-print("Prompts for ensemble agent defined.")
+#print("Prompts for ensemble agent defined.")

@@ -22,11 +22,11 @@ def run_python_code(
     exec_timeout: int,
 ) -> dict[str, Any]:
     """Runs the given python code and returns the result dictionary."""
-    print("Running python code...")
+    print("[[run_python_code123123]]Running python code...")
     start_time = time.time()
-    print("Start time:", start_time)
+    #print("Start time:", start_time)
     output_filepath = os.path.join(run_cwd, py_filepath)
-    print("Output file path:", output_filepath)
+    #print("Output file path:", output_filepath)
     with open(output_filepath, "w", encoding="utf-8") as f:
         f.write(code_text)
     try:
@@ -47,13 +47,13 @@ def run_python_code(
         "stderr": result.stderr,
         "execution_time": execution_time,
     }
-    print("Run result:", result_dict)
+    print("[[run_python_code123123]] Run result:", result_dict)
     return result_dict
 
 
 def extract_performance_from_text(text: str) -> float | None:
     """Extracts the final validation performance score from the text."""
-    print("Extracting performance from text...")
+    #print("Extracting performance from text...")
     lines = text.splitlines()
     performance_value = None
     for line in lines:
@@ -65,7 +65,7 @@ def extract_performance_from_text(text: str) -> float | None:
                 performance_value = float(score_str)
             except ValueError:
                 pass
-    print("Extracted performance value:", performance_value)
+    #print("Extracted performance value:", performance_value)
     return performance_value
 
 
@@ -75,13 +75,13 @@ def get_name_with_prefix_and_suffix(
     suffix: str = "",
 ) -> str:
     """Gets the name with the specified prefix and suffix."""
-    print("Generating name with prefix and suffix...")
+    #print("Generating name with prefix and suffix...")
     new_name = base_name
     if prefix:
         new_name = prefix + "_" + new_name
     if suffix:
         new_name = new_name + "_" + suffix
-    print("Generated name:", new_name)
+    #print("Generated name:", new_name)
     return new_name
 
 
@@ -89,9 +89,9 @@ def get_updated_suffix(
     callback_context: callback_context_module.CallbackContext,
 ) -> str:
     """Gets the suffix string."""
-    print("Getting updated suffix...")
+    #print("Getting updated suffix...")
     agent_name = callback_context.agent_name
-    print("Agent name:", agent_name)
+    #print("Agent name:", agent_name)
     if agent_name.startswith("model_eval"):
         model_id = agent_name.split("_")[-1]
         task_id = agent_name.split("_")[-2]
@@ -119,7 +119,7 @@ def get_updated_suffix(
         suffix = ""
     else:
         raise ValueError(f"Unexpected agent name: {agent_name}.")
-    print("Generated suffix:", suffix)
+    #print("Generated suffix:", suffix)
     return suffix
 
 
@@ -128,7 +128,7 @@ def get_code_state_key(
     suffix: str,
 ) -> str:
     """Gets the state key for the code."""
-    print("Getting code state key...")
+    #print("Getting code state key...")
     if agent_name.startswith("model_eval"):
         key = f"init_code_{suffix}"
     elif agent_name.startswith("merger"):
@@ -145,7 +145,7 @@ def get_code_state_key(
         key = "submission_code"
     else:
         raise ValueError(f"Unexpected agent name: {agent_name}.")
-    print("Generated code state key:", key)
+    #print("Generated code state key:", key)
     return key
 
 
@@ -154,7 +154,7 @@ def get_code_execution_result_state_key(
     suffix: str,
 ) -> str:
     """Gets the state key for the code execution result."""
-    print("Getting code execution result state key...")
+    #print("Getting code execution result state key...")
     if agent_name.startswith("model_eval"):
         key = f"init_code_exec_result_{suffix}"
     elif agent_name.startswith("merger"):
@@ -171,7 +171,7 @@ def get_code_execution_result_state_key(
         key = "submission_code_exec_result"
     else:
         raise ValueError(f"Unexpected agent name: {agent_name}.")
-    print("Generated code execution result state key:", key)
+    #print("Generated code execution result state key:", key)
     return key
 
 
@@ -180,7 +180,7 @@ def get_run_code_condition(
     raw_code: str,
 ) -> bool:
     """Gets the condition for running the code."""
-    print("Determining run code condition...")
+    #print("Determining run code condition...")
     if agent_name.startswith("ensemble_plan_implement"):
         if "debug_agent" not in agent_name:
             return True
@@ -198,7 +198,7 @@ def get_run_code_condition(
             return True
     elif "Final Validation Performance" in raw_code and "exit()" not in raw_code:
         return True
-    print("Run code condition not met.")
+    #print("Run code condition not met.")
     return False
 
 
@@ -206,18 +206,19 @@ def evaluate_code(
     callback_context: callback_context_module.CallbackContext,
 ) -> None:
     """Evaluates the given code."""
-    print("Evaluating code...")
+    #print("Evaluating code...")
     lower = callback_context.state.get("lower", True)
-    print("Is lower better?", lower)
+    #print("Is lower better?", lower)
     exec_timeout = callback_context.state.get("exec_timeout", 1800)
     agent_name = callback_context.agent_name
+    print("[[evaluate_code123123]]Agent name:", agent_name)
     suffix = get_updated_suffix(callback_context=callback_context)
     code_state_key = get_code_state_key(
         agent_name=agent_name,
         suffix=suffix,
     )
     raw_code = callback_context.state.get(code_state_key, "")
-    print("Raw code to be evaluated:", raw_code)
+    #print("Raw code to be evaluated:", raw_code)
     if agent_name.startswith("model_eval"):
         model_id = agent_name.split("_")[-1]
         task_id = agent_name.split("_")[-2]
@@ -251,10 +252,10 @@ def evaluate_code(
         raw_code=raw_code,
     ):
         workspace_dir = callback_context.state.get("workspace_dir", "")
-        print("Workspace directory:", workspace_dir)
+        #print("Workspace directory:", workspace_dir)
         task_name = callback_context.state.get("task_name", "")
         run_cwd = os.path.join(workspace_dir, task_name, task_id)
-        print("Run current working directory:", run_cwd)
+        #print("Run current working directory:", run_cwd)
         result_dict = run_python_code(
             code_text=raw_code,
             run_cwd=run_cwd,
@@ -283,6 +284,6 @@ def evaluate_code(
         agent_name=agent_name,
         suffix=suffix,
     )
-    print("Result dictionary to be saved:", result_dict)
+    print(f"[[evaluate_code123123]] Result dictionary to be saved in {code_execution_result_state_key}:", result_dict)
     callback_context.state[code_execution_result_state_key] = result_dict
     return None

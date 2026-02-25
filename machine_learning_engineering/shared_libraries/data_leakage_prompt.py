@@ -1,6 +1,6 @@
 """Defines the prompts for data leakage checker."""
 
-print("Defining prompts for data leakage checker...")
+#print("Defining prompts for data leakage checker...")
 
 CHECK_LEAKAGE_INSTR = """# Python code
 ```python
@@ -37,4 +37,4 @@ LEAKAGE_REFINE_INSTR = """# Python code
 - Your response should be a single markdown code block.
 - Note that all the variables are defined earlier. Just modify it with the above code."""
 
-print("Prompts for data leakage checker defined.")
+#print("Prompts for data leakage checker defined.")

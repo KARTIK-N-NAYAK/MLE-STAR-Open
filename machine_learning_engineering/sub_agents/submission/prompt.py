@@ -1,6 +1,6 @@
 """Defines the prompts for the submission agent."""
 
-print("Defining prompts for submission agent...")
+#print("Defining prompts for submission agent...")
 
 ADD_TEST_FINAL_INSTR = """# Introduction
 - You are a Kaggle grandmaster attending a competition.
@@ -33,4 +33,4 @@ ADD_TEST_FINAL_INSTR = """# Introduction
 - Do not use exit() function in the Python code.
 - Do not use try: and except: or if else to ignore unintended behavior."""
 
-print("Prompts for submission agent defined.")
+#print("Prompts for submission agent defined.")

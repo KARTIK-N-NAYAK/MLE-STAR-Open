@@ -1,6 +1,6 @@
 """Defines the prompts for the initialization agent."""
 
-print("Defining prompts for initialization agent...")
+#print("Defining prompts for initialization agent...")
 
 SUMMARIZATION_AGENT_INSTR = """# Task description
 {task_description}
@@ -140,4 +140,4 @@ Option 1: If the code did not use all the provided information, your response sh
 Option 2: If the code used all the provided information, simply state that "All the provided information is used."
 """
 
-print("Prompts for initialization agent defined.")
+#print("Prompts for initialization agent defined.")

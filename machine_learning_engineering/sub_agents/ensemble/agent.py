@@ -30,7 +30,7 @@ def init_ensemble_loop_states(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Initializes ensemble loop states."""
-    print("Initializing ensemble loop states...")
+    #print("Initializing ensemble loop states...")
     callback_context.state["ensemble_iter"] = 0
     return None
 
@@ -40,9 +40,9 @@ def get_init_ensemble_plan(
     llm_response: llm_response_module.LlmResponse,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Gets the initial plan to ensemble solutions."""
-    print("Getting initial ensemble plan from LLM response...")
+    #print("Getting initial ensemble plan from LLM response...")
     response_text = common_util.get_text_from_response(llm_response)
-    print("Initial ensemble plan:", response_text)
+    #print("Initial ensemble plan:", response_text)
     callback_context.state["ensemble_plans"] = [response_text]
     return None
 
@@ -54,11 +54,11 @@ def check_ensemble_plan_implement_finish(
     """Checks if the ensemble plan implement is finished."""
     print("Checking if ensemble plan implementation is finished...")
     ensemble_iter = callback_context.state.get("ensemble_iter", 0)
-    print("Current ensemble iteration:", ensemble_iter)
+    #print("Current ensemble iteration:", ensemble_iter)
     result_dict = callback_context.state.get(
         f"ensemble_code_exec_result_{ensemble_iter}", {}
     )
-    print("Ensemble code execution result:", result_dict)
+    #print("Ensemble code execution result:", result_dict)
     callback_context.state[
         f"ensemble_plan_implement_skip_data_leakage_check_{ensemble_iter}"
     ] = True
@@ -75,9 +75,9 @@ def get_refined_ensemble_plan(
     llm_response: llm_response_module.LlmResponse,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Gets the refined ensemble plan from the response."""
-    print("Getting refined ensemble plan from LLM response...")
+    #print("Getting refined ensemble plan from LLM response...")
     response_text = common_util.get_text_from_response(llm_response)
-    print("Refined ensemble plan:", response_text)
+    #print("Refined ensemble plan:", response_text)
     callback_context.state["ensemble_plans"].append(response_text)
     return None
 
@@ -86,11 +86,11 @@ def get_init_ensemble_plan_agent_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the initial ensemble plan agent instruction."""
-    print("Generating initial ensemble plan agent instruction...")
+    #print("Generating initial ensemble plan agent instruction...")
     num_solutions = context.state.get("num_solutions", 2)
-    print("Number of solutions:", num_solutions)
+    #print("Number of solutions:", num_solutions)
     outer_loop_round = context.state.get("outer_loop_round", 2)
-    print("Outer loop round:", outer_loop_round)
+    #print("Outer loop round:", outer_loop_round)
     python_solutions = []
     for task_id in range(1, num_solutions + 1):
         code = context.state.get(
@@ -102,8 +102,8 @@ def get_init_ensemble_plan_agent_instruction(
         num_solutions=num_solutions,
         python_solutions="\n".join(python_solutions),
     )
-    print("Initial ensemble plan agent instruction generated.")
-    print("Instruction:", instruction)
+    #print("Initial ensemble plan agent instruction generated.")
+    #print("Instruction:", instruction)
     return instruction
 
 
@@ -111,17 +111,17 @@ def get_ensemble_plan_refinement_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets ensemble plan refinement instruction."""
-    print("Generating ensemble plan refinement instruction...")
+    #print("Generating ensemble plan refinement instruction...")
     num_solutions = context.state.get("num_solutions", 2)
-    print("Number of solutions:", num_solutions)
+    #print("Number of solutions:", num_solutions)
     outer_loop_round = context.state.get("outer_loop_round", 2)
-    print("Outer loop round:", outer_loop_round)
+    #print("Outer loop round:", outer_loop_round)
     num_top_plans = context.state.get("num_top_plans", 3)
-    print("Number of top plans to consider:", num_top_plans)
+    #print("Number of top plans to consider:", num_top_plans)
     lower = context.state.get("lower", True)
-    print("Is lower better?", lower)
+    #print("Is lower better?", lower)
     prev_plans = context.state.get("ensemble_plans", [])
-    print("Previous ensemble plans:", prev_plans)
+    #print("Previous ensemble plans:", prev_plans)
     prev_scores = []
     for k in range(len(prev_plans)):
         exec_result = context.state.get(
@@ -158,11 +158,11 @@ def get_ensemble_plan_implement_agent_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the ensemble plan implement agent instruction."""
-    print("Generating ensemble plan implement agent instruction...")
+    #print("Generating ensemble plan implement agent instruction...")
     num_solutions = context.state.get("num_solutions", 2)
-    print("Number of solutions:", num_solutions)
+    #print("Number of solutions:", num_solutions)
     outer_loop_round = context.state.get("outer_loop_round", 2)
-    print("Outer loop round:", outer_loop_round)
+    #print("Outer loop round:", outer_loop_round)
     python_solutions = []
     for task_id in range(1, num_solutions + 1):
         code = context.state.get(
@@ -182,13 +182,13 @@ def create_workspace(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Creates workspace."""
-    print("Creating workspace for ensemble agent...")
+    #print("Creating workspace for ensemble agent...")
     data_dir = callback_context.state.get("data_dir", "")
-    print("Data directory:", data_dir)
+    #print("Data directory:", data_dir)
     workspace_dir = callback_context.state.get("workspace_dir", "")
-    print("Workspace directory:", workspace_dir)
+    #print("Workspace directory:", workspace_dir)
     task_name = callback_context.state.get("task_name", "")
-    print("Task name:", task_name)
+    #print("Task name:", task_name)
     run_cwd = os.path.join(workspace_dir, task_name, "ensemble")
     print("Run current working directory:", run_cwd)
     if os.path.exists(run_cwd):

@@ -13,7 +13,7 @@ class OpenAICompatProvider:
     """OpenAI-compatible provider (OpenRouter/Ollama/LM Studio)."""
 
     def __init__(self) -> None:
-        print("Initializing OpenAI-compatible LLM provider...")
+        #print("Initializing OpenAI-compatible LLM provider...")
         # Import inside to avoid import side-effects during static analysis
         from openai import OpenAI  # type: ignore
 
@@ -33,7 +33,7 @@ class OpenAICompatProvider:
         temperature: float = 0.2,
         max_tokens: int = 2048,
     ) -> str:
-        print("Calling chat completion on OpenAI-compatible LLM provider...")
+        #print("Calling chat completion on OpenAI-compatible LLM provider...")
         # Add OpenRouter-specific headers only when targeting OpenRouter
         extra_headers = None
         if "openrouter.ai" in (self._base_url or ""):

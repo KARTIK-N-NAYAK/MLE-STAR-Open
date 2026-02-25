@@ -21,14 +21,14 @@ def save_state(
     print("Saving state to final_state.json")
     """Prints the current state of the callback context."""
     workspace_dir = callback_context.state.get("workspace_dir", "")
-    print("Workspace directory:", workspace_dir)
+    #print("Workspace directory:", workspace_dir)
     task_name = callback_context.state.get("task_name", "")
-    print("Task name:", task_name)
+    #print("Task name:", task_name)
     run_cwd = os.path.join(workspace_dir, task_name)
-    print("Run current working directory:", run_cwd)
+    #print("Run current working directory:", run_cwd)
     with open(os.path.join(run_cwd, "final_state.json"), "w") as f:
         json.dump(callback_context.state.to_dict(), f, indent=2)
-    print("State saved successfully.")
+    print(f"State saved successfully in {run_cwd}/final_state.json")
     return None
 
 print("Creating MLE pipeline agent...")

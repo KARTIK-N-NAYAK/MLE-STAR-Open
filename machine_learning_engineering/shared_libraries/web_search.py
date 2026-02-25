@@ -9,7 +9,7 @@ def web_search(query: str, max_results: int = 5) -> List[Dict[str, str]]:
 
     Each result contains: title, href, and body snippet.
     """
-    print(f"Performing web search for query: '{query}' with max results: {max_results}...")
+    #print(f"Performing web search for query: '{query}' with max results: {max_results}...")
     results: List[Dict[str, str]] = []
     with DDGS() as ddgs:
         for r in ddgs.text(query, max_results=max_results):
@@ -18,6 +18,6 @@ def web_search(query: str, max_results: int = 5) -> List[Dict[str, str]]:
                 "href": r.get("href", ""),
                 "body": r.get("body", ""),
             })
-    print(f"Web search completed. Number of results obtained: {len(results)}")
-    print("Results:", results)
+    print(f"[[web_search123123]]Web search completed. Number of results obtained: {len(results)}")
+    #print("Results:", results)
     return results

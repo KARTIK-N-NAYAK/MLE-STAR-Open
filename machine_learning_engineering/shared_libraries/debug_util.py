@@ -21,19 +21,19 @@ def check_rollback(
     callback_context: callback_context_module.CallbackContext,
 ) -> Optional[types.Content]:
     """Checks if rollback is needed and updates related states."""
-    print("Checking if rollback is needed...")
+    #print("Checking if rollback is needed...")
     agent_name = callback_context.agent_name
-    print("Agent name:", agent_name)
+    #print("Agent name:", agent_name)
     if agent_name.startswith("ablation"):
         return None
     suffix = code_util.get_updated_suffix(callback_context=callback_context)
-    print("Suffix:", suffix)
+    #print("Suffix:", suffix)
     code_execution_result_state_key = code_util.get_code_execution_result_state_key(
         agent_name=agent_name,
         suffix=suffix,
     )
     result_dict = callback_context.state.get(code_execution_result_state_key, {})
-    print("Code execution result:", result_dict)
+    #print("Code execution result:", result_dict)
     if result_dict.get("returncode", 1) == 1:
         # Rollback is needed
         callback_context.state[code_execution_result_state_key] = {}
@@ -46,13 +46,13 @@ def get_bug_summary(
     prefix: str,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Gets the bug summary."""
-    print("Getting bug summary...")
+    #print("Getting bug summary...")
     response_text = common_util.get_text_from_response(llm_response)
-    print("Bug summary response text:", response_text)
+    #print("Bug summary response text:", response_text)
     clean_bug = response_text.replace("```", "")
-    print("Cleaned bug summary:", clean_bug)
+    #print("Cleaned bug summary:", clean_bug)
     suffix = code_util.get_updated_suffix(callback_context=callback_context)
-    print("Suffix:", suffix)
+    #print("Suffix:", suffix)
     key_name = code_util.get_name_with_prefix_and_suffix(
         base_name="bug_summary",
         prefix=prefix,
@@ -68,17 +68,17 @@ def skip_bug_summary(
     prefix: str,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Skips the bug summary if there are no bugs."""
-    print("Checking if bug summary can be skipped...")
+    #print("Checking if bug summary can be skipped...")
     agent_name = callback_context.agent_name
-    print("Agent name:", agent_name)
+    #print("Agent name:", agent_name)
     suffix = code_util.get_updated_suffix(callback_context=callback_context)
-    print("Suffix:", suffix)
+    #print("Suffix:", suffix)
     code_execution_result_state_key = code_util.get_code_execution_result_state_key(
         agent_name=agent_name,
         suffix=suffix,
     )
     result_dict = callback_context.state.get(code_execution_result_state_key, {})
-    print("Code execution result:", result_dict)
+    #print("Code execution result:", result_dict)
     if result_dict and result_dict.get("returncode", 1) == 0:
         key_name = code_util.get_name_with_prefix_and_suffix(
             base_name="bug_summary",
@@ -95,17 +95,17 @@ def check_bug_existence(
     llm_request: llm_request_module.LlmRequest,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Checks if a bug exists in the code."""
-    print("Checking for bug existence in the code...")
+    #print("Checking for bug existence in the code...")
     agent_name = callback_context.agent_name
-    print("Agent name:", agent_name)
+    #print("Agent name:", agent_name)
     suffix = code_util.get_updated_suffix(callback_context=callback_context)
-    print("Suffix:", suffix)
+    #print("Suffix:", suffix)
     code_execution_result_state_key = code_util.get_code_execution_result_state_key(
         agent_name=agent_name,
         suffix=suffix,
     )
     result_dict = callback_context.state.get(code_execution_result_state_key, {})
-    print("Code execution result:", result_dict)
+    #print("Code execution result:", result_dict)
     if result_dict and result_dict.get("returncode", 1) == 0:
         return llm_response_module.LlmResponse()
     return None
@@ -115,17 +115,17 @@ def get_bug_summary_agent_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the bug summary agent instruction."""
-    print("Generating bug summary agent instruction...")
+    #print("Generating bug summary agent instruction...")
     agent_name = context.agent_name
-    print("Agent name:", agent_name)
+    #print("Agent name:", agent_name)
     suffix = code_util.get_updated_suffix(callback_context=context)
-    print("Suffix:", suffix)
+    #print("Suffix:", suffix)
     code_execution_result_state_key = code_util.get_code_execution_result_state_key(
         agent_name=agent_name,
         suffix=suffix,
     )
     result_dict = context.state.get(code_execution_result_state_key, {})
-    print("Code execution result:", result_dict)
+    #print("Code execution result:", result_dict)
     if agent_name.startswith("model_eval"):
         model_id = agent_name.split("_")[-1]
         filename = f"init_code_{model_id}.py"
@@ -150,8 +150,8 @@ def get_bug_summary_agent_instruction(
     else:
         raise ValueError(f"Unexpected agent name: {agent_name}.")
     bug = result_dict.get("stderr", "")
-    print("Bug extracted:", bug)
-    print("Filename determined:", filename)
+    print("[[get_bug_summary_agent_instruction123123]]Bug extracted:", bug)
+    #print("Filename determined:", filename)
     return debug_prompt.BUG_SUMMARY_INSTR.format(
         bug=bug,
         filename=filename,
@@ -163,13 +163,13 @@ def get_debug_agent_instruction(
     prefix: str,
 ) -> str:
     """Gets the debug agent instruction."""
-    print("Generating debug agent instruction...")
+    #print("Generating debug agent instruction...")
     task_description = context.state.get("task_description", "")
-    print("Task description:", task_description)
+    #print("Task description:", task_description)
     agent_name = context.agent_name
-    print("Agent name:", agent_name)
+    #print("Agent name:", agent_name)
     suffix = code_util.get_updated_suffix(callback_context=context)
-    print("Suffix:", suffix)
+    #print("Suffix:", suffix)
     key_name = code_util.get_name_with_prefix_and_suffix(
         base_name="bug_summary",
         prefix=prefix,
@@ -181,8 +181,8 @@ def get_debug_agent_instruction(
         suffix=suffix,
     )
     code = context.state.get(code_state_key, "")
-    print("Code to debug:", code)
-    print("Bug to fix:", bug)
+    #print("Code to debug:", code)
+    print("[[get_debug_agent_instruction123123]]Bug to fix:", bug)
     return debug_prompt.BUG_REFINE_INSTR.format(
         task_description=task_description,
         code=code,
@@ -196,15 +196,15 @@ def get_code_from_response(
     do_eval: bool = True,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Gets the code from the response."""
-    print("Extracting code from LLM response...")
+    #print("Extracting code from LLM response...")
     response_text = common_util.get_text_from_response(llm_response)
-    print("LLM response text:", response_text)
+    #print("LLM response text:", response_text)
     code = response_text.replace("```python", "").replace("```", "")
-    print("Extracted code:", code)
+    #print("Extracted code:", code)
     agent_name = callback_context.agent_name
-    print("Agent name:", agent_name)
+    #print("Agent name:", agent_name)
     suffix = code_util.get_updated_suffix(callback_context=callback_context)
-    print("Suffix:", suffix)
+    #print("Suffix:", suffix)
     code_state_key = code_util.get_code_state_key(
         agent_name=agent_name,
         suffix=suffix,
@@ -239,7 +239,7 @@ def get_debug_inner_loop_agent(
     suffix: str,
 ) -> agents.LoopAgent:
     """Gets the debug_inner_loop_agent."""
-    print("Creating debug inner loop agent...")
+    #print("Creating debug inner loop agent...")
     bug_summary_agent = agents.Agent(
         model=config.CONFIG.agent_model,
         name=code_util.get_name_with_prefix_and_suffix(
@@ -316,7 +316,7 @@ def get_run_and_debug_agent(
     before_model_callback: Optional[agents.llm_agent.BeforeModelCallback],
 ) -> agents.LoopAgent:
     """Gets the run and debug agent."""
-    print("Creating run and debug agent...")
+    #print("Creating run and debug agent...")
     if prefix.startswith("ensemble_plan_implement"):
         use_data_leakage_checker = False
     else:

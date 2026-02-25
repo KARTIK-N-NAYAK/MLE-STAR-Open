@@ -22,9 +22,9 @@ def update_inner_loop_states(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Updates inner loop states."""
-    print("Updating inner loop states...")
+    #print("Updating inner loop states...")
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     callback_context.state[f"inner_iter_{task_id}"] += 1
     return None
 
@@ -33,48 +33,48 @@ def update_outer_loop_states(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Updates outer loop states."""
-    print("Updating outer loop states...")
+    #print("Updating outer loop states...")
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     step = callback_context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     workspace_dir = callback_context.state.get("workspace_dir", "")
-    print("Workspace directory:", workspace_dir)
+    #print("Workspace directory:", workspace_dir)
     task_name = callback_context.state.get("task_name", "")
-    print("Task name:", task_name)
+    #print("Task name:", task_name)
     lower = callback_context.state.get("lower", True)
-    print("Is lower better?", lower)
+    #print("Is lower better?", lower)
     inner_loop_round = callback_context.state.get("inner_loop_round", 2)
-    print("Inner loop round:", inner_loop_round)
+    #print("Inner loop round:", inner_loop_round)
     run_cwd = os.path.join(workspace_dir, task_name, task_id)
-    print("Run current working directory:", run_cwd)
+    #print("Run current working directory:", run_cwd)
     prev_solution = callback_context.state.get(
         f"train_code_{step}_{task_id}", ""
     )
-    print("Previous solution:", prev_solution)
+    print("[[update_outer_loop_states123123]]Previous solution:", prev_solution)
     prev_exec_result = callback_context.state.get(
         f"train_code_exec_result_{step}_{task_id}", {}
     )
-    print("Previous execution result:", prev_exec_result)
+    print("[[update_outer_loop_states123123]]Previous execution result:", prev_exec_result)
     improvements = []
     for inner_iter in range(inner_loop_round):
-        print("Evaluating improvement for inner iteration:", inner_iter)
+        #print("Evaluating improvement for inner iteration:", inner_iter)
         exec_result = callback_context.state.get(
             f"train_code_improve_exec_result_{inner_iter}_{step}_{task_id}", {}
         )
-        print("Current execution result:", exec_result)
+        #print("Current execution result:", exec_result)
         if lower:
             improvement = prev_exec_result["score"] - exec_result["score"]
         else:
             improvement = exec_result["score"] - prev_exec_result["score"] 
-        print("Improvement:", improvement)
+        #print("Improvement:", improvement)
         improvements.append(improvement)
     best_improvement = max(improvements)
-    print("Best improvement:", best_improvement)
+    print("[[update_outer_loop_states123123]]Best improvement:", best_improvement)
     best_idx = improvements.index(best_improvement)
-    print("Best index:", best_idx)
+    #print("Best index:", best_idx)
     output_filepath = os.path.join(run_cwd, f"train{step+1}.py")
-    print("Output file path for updated solution:", output_filepath)
+    #print("Output file path for updated solution:", output_filepath)
     if best_improvement <= 0.0:
         callback_context.state[
             f"train_code_{step+1}_{task_id}"
@@ -102,15 +102,15 @@ def update_outer_loop_states(
     ablation_results = callback_context.state.get(
         f"ablation_summary_{step}_{task_id}", ""
     )
-    print("Ablation results:", ablation_results)
+    print("[[update_outer_loop_states123123]]Ablation results:", ablation_results)
     code_block = callback_context.state.get(
         f"refine_code_block_{step}_{task_id}", ""
     )
-    print("Code block:", code_block)
+    #print("Code block:", code_block)
     callback_context.state[f"prev_ablations_{task_id}"].append(ablation_results)
     callback_context.state[f"prev_code_blocks_{task_id}"].append(code_block)
     callback_context.state[f"refine_step_{task_id}"] += 1
-    print("Outer loop step updated to:", callback_context.state[f"refine_step_{task_id}"])
+    #print("Outer loop step updated to:", callback_context.state[f"refine_step_{task_id}"])
     return None
 
 
@@ -118,9 +118,9 @@ def init_inner_loop_states(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Initializes inner loop states."""
-    print("Initializing inner loop states...")
+    #print("Initializing inner loop states...")
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     callback_context.state[f"inner_iter_{task_id}"] = 0
     return None
 
@@ -129,9 +129,9 @@ def init_outer_loop_states(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Initializes outer loop states."""
-    print("Initializing outer loop states...")
+    #print("Initializing outer loop states...")
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     callback_context.state[f"refine_step_{task_id}"] = 0
     callback_context.state[f"prev_ablations_{task_id}"] = []
     callback_context.state[f"prev_code_blocks_{task_id}"] = []
@@ -141,15 +141,15 @@ def get_ablation_agent_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the ablation agent instruction."""
-    print("Generating ablation agent instruction...")
+    #print("Generating ablation agent instruction...")
     task_id = context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     prev_ablations = context.state.get(f"prev_ablations_{task_id}", [])
-    print("Previous ablations:", prev_ablations)
+    #print("Previous ablations:", prev_ablations)
     step = context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     code = context.state.get(f"train_code_{step}_{task_id}", "")
-    print("Current code:", code)
+    #print("Current code:", code)
     prev_ablations_str = ""
     for i, ablation_result in enumerate(prev_ablations):
         prev_ablations_str += f"## Previous ablation study result {i+1}\n"
@@ -170,15 +170,15 @@ def get_ablation_summary_agent_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the ablation summary agent instruction."""
-    print("Generating ablation summary agent instruction...")
+    #print("Generating ablation summary agent instruction...")
     task_id = context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     step = context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     code = context.state.get(f"ablation_code_{step}_{task_id}", "")
-    print("Current ablation code:", code)
+    #print("Current ablation code:", code)
     result_dict = context.state.get(f"ablation_code_exec_result_{step}_{task_id}", {})
-    print("Ablation code execution result:", result_dict)
+    #print("Ablation code execution result:", result_dict)
     return prompt.SUMMARIZE_ABLATION_INSTR.format(
         code=code,
         result=result_dict["ablation_result"],
@@ -189,17 +189,17 @@ def get_init_plan_agent_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the initial plan agent instruction."""
-    print("Generating initial plan agent instruction...")
+    #print("Generating initial plan agent instruction...")
     task_id = context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     step = context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     code = context.state.get(f"train_code_{step}_{task_id}", "")
-    print("Current code:", code)
+    #print("Current code:", code)
     ablation_results = context.state.get(f"ablation_summary_{step}_{task_id}", "")
-    print("Ablation results:", ablation_results)
+    #print("Ablation results:", ablation_results)
     prev_code_blocks = context.state.get(f"prev_code_blocks_{task_id}", [])
-    print("Previous code blocks:", prev_code_blocks)
+    #print("Previous code blocks:", prev_code_blocks)
     if not prev_code_blocks:
         instruction = prompt.EXTRACT_BLOCK_AND_PLAN_INSTR.format(
             code=code,
@@ -218,19 +218,19 @@ def get_plan_refinement_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets plan refinement instruction."""
-    print("Generating plan refinement instruction...")
+    #print("Generating plan refinement instruction...")
     lower = context.state.get("lower", True)
-    print("Is lower better?", lower)
+    #print("Is lower better?", lower)
     task_id = context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     step = context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     code_block = context.state.get(f"refine_code_block_{step}_{task_id}", "")
-    print("Code block:", code_block)
+    #print("Code block:", code_block)
     prev_plans = context.state.get(f"refine_plans_{step}_{task_id}", [])
-    print("Previous plans:", prev_plans)
+    #print("Previous plans:", prev_plans)
     prev_exec_result = context.state.get(f"train_code_exec_result_{step}_{task_id}", {})
-    print("Previous execution result:", prev_exec_result)
+    print("[[get_plan_refinement_instruction123123]] Previous execution result:", prev_exec_result)
     score_plan_time_list = []
     for inner_iter, curr_plan in enumerate(prev_plans):
         exec_result = context.state.get(
@@ -242,7 +242,7 @@ def get_plan_refinement_instruction(
             improvement = exec_result["score"] - prev_exec_result["score"] 
         score_plan_time_list.append((improvement, curr_plan, exec_result["execution_time"]))
     num_top_plans = context.state.get("num_top_plans", 3)
-    print("Number of top plans to consider:", num_top_plans)
+    #print("Number of top plans to consider:", num_top_plans)
     score_plan_time_list.sort(key=lambda x: x[0], reverse=True)
     prev_plan_summary = ""
     selected_score_plan_time_list = score_plan_time_list[:num_top_plans]
@@ -250,6 +250,7 @@ def get_plan_refinement_instruction(
         prev_plan_summary += f"## Plan: {curr_plan}\n"
         prev_plan_summary += f"## Execution time after implement: {execution_time}s\n"
         prev_plan_summary += f"## Score: {score:.5f}\n\n"
+    print("[[get_plan_refinement_instruction123123]] Previous plan summary:\n", prev_plan_summary)
     return prompt.PLAN_REFINEMENT_INSTR.format(
         code_block=code_block,
         prev_plan_summary=prev_plan_summary,
@@ -260,15 +261,15 @@ def get_plan_implement_agent_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the plan implement agent instruction."""
-    print("Generating plan implement agent instruction...")
+    #print("Generating plan implement agent instruction...")
     task_id = context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     step = context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     code_block = context.state.get(f"refine_code_block_{step}_{task_id}", "")
-    print("Code block:", code_block)
+    #print("Code block:", code_block)
     plan = context.state.get(f"refine_plans_{step}_{task_id}", [""])[-1]
-    print("Plan to implement:", plan)
+    #print("Plan to implement:", plan)
     return prompt.IMPLEMENT_PLAN_INSTR.format(
         code_block=code_block,
         plan=plan,
@@ -280,14 +281,14 @@ def check_ablation_finish(
     llm_request: llm_request_module.LlmRequest,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Checks if the ablation study is finished."""
-    print("Checking if ablation study is finished...")
+    #print("Checking if ablation study is finished...")
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     callback_context.state[f"ablation_skip_data_leakage_check_{task_id}"] = True
     step = callback_context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     result_dict = callback_context.state.get(f"ablation_code_exec_result_{step}_{task_id}", {})
-    print("Ablation code execution result:", result_dict)
+    #print("Ablation code execution result:", result_dict)
     if result_dict.get("returncode", 1) == 0:
         return llm_response_module.LlmResponse()
     callback_context.state[f"ablation_skip_data_leakage_check_{task_id}"] = False
@@ -299,17 +300,17 @@ def check_init_plan_finish(
     llm_request: llm_request_module.LlmRequest,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Checks if the initial plan is finished."""
-    print("Checking if initial plan is finished...")
+    #print("Checking if initial plan is finished...")
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     step = callback_context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     code = callback_context.state.get(f"train_code_{step}_{task_id}", "")
-    print("Current code:", code)
+    #print("Current code:", code)
     code_block = callback_context.state.get(f"refine_code_block_{step}_{task_id}", "")
-    print("Code block:", code_block)
+    #print("Code block:", code_block)
     status = code and code_block and (code_block in code)
-    print("Initial plan finished status:", status)
+    #print("Initial plan finished status:", status)
     if status:
         return llm_response_module.LlmResponse()
     return None
@@ -320,19 +321,19 @@ def check_plan_implement_finish(
     llm_request: llm_request_module.LlmRequest,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Checks if the plan implement is finished."""
-    print("Checking if plan implementation is finished...")
+    #print("Checking if plan implementation is finished...")
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     step = callback_context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     inner_iter = callback_context.state.get(f"inner_iter_{task_id}", 0)
-    print("Current inner iteration:", inner_iter)
+    #print("Current inner iteration:", inner_iter)
     suffix = f"{inner_iter}_{step}_{task_id}"
-    print("Suffix for state keys:", suffix)
+    #print("Suffix for state keys:", suffix)
     result_dict = callback_context.state.get(
         f"train_code_improve_exec_result_{suffix}", {}
     )
-    print("Plan implementation execution result:", result_dict)
+    #print("Plan implementation execution result:", result_dict)
     callback_context.state[f"plan_implement_skip_data_leakage_check_{suffix}"] = True
     if result_dict:
         return llm_response_module.LlmResponse()
@@ -345,13 +346,13 @@ def get_ablation_summary(
     llm_response: llm_response_module.LlmResponse,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Gets the ablation summary from the response."""
-    print("Getting ablation summary from response...")
+    #print("Getting ablation summary from response...")
     response_text = common_util.get_text_from_response(llm_response)
-    print("Ablation summary response text:", response_text)
+    #print("Ablation summary response text:", response_text)
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     step = callback_context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     callback_context.state[f"ablation_summary_{step}_{task_id}"] = response_text
     return None
 
@@ -361,13 +362,13 @@ def get_plan_and_code_block(
     llm_response: llm_response_module.LlmResponse,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Gets the plan and code block from the response."""
-    print("Getting plan and code block from response...")
+    #print("Getting plan and code block from response...")
     response_text = common_util.get_text_from_response(llm_response)
-    print("Plan and code block response text:", response_text)
+    #print("Plan and code block response text:", response_text)
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     step = callback_context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     start_idx = response_text.find("[")
     end_idx = response_text.rfind("]") + 1
     try:
@@ -387,13 +388,13 @@ def get_refined_plan(
     llm_response: llm_response_module.LlmResponse,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Gets the refined plan from the response."""
-    print("Getting refined plan from response...")
+    #print("Getting refined plan from response...")
     response_text = common_util.get_text_from_response(llm_response)
-    print("Refined plan response text:", response_text)
+    #print("Refined plan response text:", response_text)
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     step = callback_context.state.get(f"refine_step_{task_id}", 0)
-    print("Current refinement step:", step)
+    #print("Current refinement step:", step)
     callback_context.state[f"refine_plans_{step}_{task_id}"].append(response_text)
     return None
 

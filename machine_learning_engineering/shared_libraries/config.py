@@ -39,4 +39,4 @@ class DefaultConfig:
 
 
 CONFIG = DefaultConfig()
-print("Default configuration initialized:", CONFIG)
+#print("Default configuration initialized:", CONFIG)

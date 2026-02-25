@@ -1,6 +1,6 @@
 """Defines the prompts in the Machine Learning Engineering Agent."""
 
-print("Defining prompts for Machine Learning Engineering Agent...")
+#print("Defining prompts for Machine Learning Engineering Agent...")
 
 SYSTEM_INSTRUCTION ="""You are a Machine Learning Engineering Multi Agent System.
 """
@@ -33,4 +33,4 @@ TASK_AGENT_INSTR = """# Introduction
 - You need to first obtain a absolute path to the local directory that contains the data of the Kaggle competition from the user.
 """
 
-print("Prompts for Machine Learning Engineering Agent defined.")
+#print("Prompts for Machine Learning Engineering Agent defined.")

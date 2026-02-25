@@ -25,23 +25,23 @@ def get_model_candidates(
     llm_response: llm_response_module.LlmResponse,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Gets the model candidates."""
-    print("Getting model candidates from response...")
+    #print("Getting model candidates from response...")
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     workspace_dir = callback_context.state.get("workspace_dir", "")
-    print("Workspace directory:", workspace_dir)
+    #print("Workspace directory:", workspace_dir)
     task_name = callback_context.state.get("task_name", "")
-    print("Task name:", task_name)
+    #print("Task name:", task_name)
     num_model_candidates = callback_context.state.get("num_model_candidates", 2) 
-    print("Number of model candidates:", num_model_candidates)
+    #print("Number of model candidates:", num_model_candidates)
     run_cwd = os.path.join(workspace_dir, task_name, task_id)
-    print("Run current working directory:", run_cwd)
+    #print("Run current working directory:", run_cwd)
     try:
         response_text = common_util.get_text_from_response(llm_response)
-        print("Model candidates response text:", response_text)
+        #print("Model candidates response text:", response_text)
         start_idx, end_idx = response_text.find("["), response_text.rfind("]")+1
         result = response_text[start_idx:end_idx]
-        print("Extracted model candidates string:", result)
+        #print("Extracted model candidates string:", result)
         models = ast.literal_eval(result)[:num_model_candidates]
         for j, model in enumerate(models):
             model_description = ""
@@ -68,13 +68,13 @@ def get_task_summary(
     llm_response: llm_response_module.LlmResponse,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Gets the task summary."""
-    print("Getting task summary from response...")
+    #print("Getting task summary from response...")
     response_text = common_util.get_text_from_response(llm_response)
-    print("Task summary response text:", response_text)
+    #print("Task summary response text:", response_text)
     task_type = callback_context.state.get("task_type", "Unknown Task")
-    print("Task type:", task_type)
+    #print("Task type:", task_type)
     task_summary = f"Task: {task_type}\n{response_text}"
-    print("Generated task summary:", task_summary)
+    #print("Generated task summary:", task_summary)
     callback_context.state["task_summary"] = task_summary
     return None
 
@@ -84,9 +84,9 @@ def check_model_finish(
     llm_request: llm_request_module.LlmRequest,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Checks if the model retrieval is finished."""
-    print("Checking if model retrieval is finished...")
+    #print("Checking if model retrieval is finished...")
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     if callback_context.state.get(f"init_{task_id}_model_finish", False):
         return llm_response_module.LlmResponse()
     return None
@@ -99,19 +99,19 @@ def check_model_eval_finish(
     """Checks if the model evaluation is finished."""
     print("Checking if model evaluation is finished...")
     model_id = callback_context.agent_name.split("_")[-1]
-    print("Model ID:", model_id)
+    #print("Model ID:", model_id)
     task_id = callback_context.agent_name.split("_")[-2]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     model_description = callback_context.state.get(
         f"init_{task_id}_model_{model_id}",
         {},
     ).get("model_description", "")
-    print("Model description:", model_description)
+    #print("Model description:", model_description)
     callback_context.state[f"model_eval_skip_data_leakage_check_{task_id}_{model_id}"] = True
     if not model_description:
         return llm_response_module.LlmResponse()
     result_dict = callback_context.state.get(f"init_code_exec_result_{task_id}_{model_id}", {})
-    print("Model evaluation execution result:", result_dict)
+    print("[[check_model_eval_finish123123]]Model evaluation execution result:", result_dict)
     if result_dict:
         return llm_response_module.LlmResponse()
     callback_context.state[f"model_eval_skip_data_leakage_check_{task_id}_{model_id}"] = False
@@ -123,13 +123,13 @@ def check_merger_finish(
     llm_request: llm_request_module.LlmRequest,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Checks if the code integration is finished."""
-    print("Checking if code integration is finished...")
+    #print("Checking if code integration is finished...")
     reference_idx = callback_context.agent_name.split("_")[-1]
-    print("Reference index:", reference_idx)
+    #print("Reference index:", reference_idx)
     task_id = callback_context.agent_name.split("_")[-2]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     result_dict = callback_context.state.get(f"merger_code_exec_result_{task_id}_{reference_idx}", {})
-    print("Code integration execution result:", result_dict)
+    #print("Code integration execution result:", result_dict)
     callback_context.state[f"merger_skip_data_leakage_check_{task_id}_{reference_idx}"] = True
     if result_dict:
         return llm_response_module.LlmResponse()
@@ -142,15 +142,15 @@ def skip_data_use_check(
     llm_request: llm_request_module.LlmRequest,
 ) -> Optional[llm_response_module.LlmResponse]:
     """Skips the data use check if the code is not changed."""
-    print("Checking if data use check can be skipped...")
+    #print("Checking if data use check can be skipped...")
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     check_data_use_finish = callback_context.state.get(f"check_data_use_finish_{task_id}", False)
-    print("Is data use check finished?", check_data_use_finish)
+    #print("Is data use check finished?", check_data_use_finish)
     if check_data_use_finish:
         return llm_response_module.LlmResponse()
     result_dict = callback_context.state.get(f"train_code_exec_result_0_{task_id}", {})
-    print("Training code execution result:", result_dict)
+    #print("Training code execution result:", result_dict)
     callback_context.state[f"check_data_use_skip_data_leakage_check_{task_id}"] = True
     if result_dict:
         return llm_response_module.LlmResponse()
@@ -162,26 +162,28 @@ def rank_candidate_solutions(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Ranks the candidate solutions based on their scores."""
-    print("Ranking candidate solutions...")
+    print("[[rank_candidate_solutions123123]Ranking candidate solutions...")
     workspace_dir = callback_context.state.get("workspace_dir", "")
-    print("Workspace directory:", workspace_dir)
+    #print("123123Workspace directory:", workspace_dir)
     task_name = callback_context.state.get("task_name", "")
-    print("Task name:", task_name)
+    #print("123123Task name:", task_name)
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     run_cwd = os.path.join(workspace_dir, task_name, task_id)
-    print("Run current working directory:", run_cwd)
+    print("[[rank_candidate_solutions123123]]Run current working directory:", run_cwd)
     num_model_candidates = callback_context.state.get("num_model_candidates", 2)
-    print("Number of model candidates:", num_model_candidates)
+    print("[[rank_candidate_solutions123123]]Number of model candidates:", num_model_candidates)
     performance_results = []
     for k in range(num_model_candidates):
-        print("Processing model candidate:", k + 1)
+        print("[[rank_candidate_solutions123123]]Processing model candidate:", k + 1)
         model_id = k + 1
         init_code = callback_context.state.get(f"init_code_{task_id}_{model_id}", "")
         init_code_exec_result = callback_context.state.get(
             f"init_code_exec_result_{task_id}_{model_id}", {}
         )
+        print(f"[[rank_candidate_solutions123123]]Init code execution result for model {model_id}:", init_code_exec_result)
         if init_code_exec_result:
+            print(f"[[rank_candidate_solutions123123]]Score for model {model_id}:", init_code_exec_result.get("score", 0.0))
             performance_results.append(
                 (init_code_exec_result.get("score", 0.0), init_code, init_code_exec_result)
             )
@@ -189,11 +191,11 @@ def rank_candidate_solutions(
         performance_results.sort(key=lambda x: x[0])
     else:
         performance_results.sort(key=lambda x: x[0], reverse=True)
-    print("Sorted performance results:", performance_results)
+    print("[[rank_candidate_solutions123123]]Sorted performance results:", performance_results)
     best_score = performance_results[0][0]
-    print("Best score among candidate solutions:", best_score)
+    print("[[rank_candidate_solutions123123]]Best score among candidate solutions:", best_score)
     base_solution = performance_results[0][1].replace("```python", "").replace("```", "")
-    print("Base solution code:", base_solution)
+    #print("Base solution code:", base_solution)
     callback_context.state[f"performance_results_{task_id}"] = performance_results
     callback_context.state[f"best_score_{task_id}"] = best_score
     callback_context.state[f"base_solution_{task_id}"] = base_solution
@@ -209,26 +211,26 @@ def select_best_solution(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Selects the best solution."""
-    print("Selecting the best solution...")
+    #print("Selecting the best solution...")
     workspace_dir = callback_context.state.get("workspace_dir", "")
-    print("Workspace directory:", workspace_dir)
+    #print("Workspace directory:", workspace_dir)
     task_name = callback_context.state.get("task_name", "")
-    print("Task name:", task_name)
+    #print("Task name:", task_name)
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     run_cwd = os.path.join(workspace_dir, task_name, task_id)
-    print("Run current working directory:", run_cwd)
+    #print("Run current working directory:", run_cwd)
     best_idx = callback_context.state.get(f"best_idx_{task_id}", 0)
-    print("Best index of the solution:", best_idx)
+    #print("Best index of the solution:", best_idx)
     response = callback_context.state.get(f"merger_code_{task_id}_{best_idx}", "")
-    print("Best solution code from merger:", response)
+    #print("Best solution code from merger:", response)
     result_dict = callback_context.state.get(
         f"merger_code_exec_result_{task_id}_{best_idx}", {}
     )
     code_text = response.replace("```python", "").replace("```", "")
-    print("Best solution code text:", code_text)
+    #print("Best solution code text:", code_text)
     output_filepath = os.path.join(run_cwd, "train0.py")
-    print("Output file path for best solution:", output_filepath)
+    #print("Output file path for best solution:", output_filepath)
     with open(output_filepath, "w", encoding="utf-8") as f:
         f.write(code_text)
     callback_context.state[f"train_code_0_{task_id}"] = code_text
@@ -240,26 +242,26 @@ def update_merger_states(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Updates merger states."""
-    print("Updating merger states...")
+    #print("Updating merger states...")
     lower = callback_context.state.get("lower", True)
-    print("Is lower better?", lower)
+    #print("Is lower better?", lower)
     reference_idx = callback_context.agent_name.split("_")[-1]
-    print("Reference index:", reference_idx)
+    #print("Reference index:", reference_idx)
     task_id = callback_context.agent_name.split("_")[-2]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     best_score = callback_context.state.get(f"best_score_{task_id}", 0)
-    print("Current best score:", best_score)
+    #print("Current best score:", best_score)
     base_solution = callback_context.state.get(f"base_solution_{task_id}", "")
-    print("Current base solution code:", base_solution)
+    #print("Current base solution code:", base_solution)
     best_idx = callback_context.state.get(f"best_idx_{task_id}", 0)
-    print("Current best index:", best_idx)
+    #print("Current best index:", best_idx)
     merged_code = callback_context.state.get(
         f"merger_code_{task_id}_{reference_idx}", ""
     )
     result_dict = callback_context.state.get(
         f"merger_code_exec_result_{task_id}_{reference_idx}", {}
     )
-    print("Merged code execution result:", result_dict)
+    #print("Merged code execution result:", result_dict)
     score = result_dict["score"]
     if lower:
         if score <= best_score:
@@ -281,20 +283,20 @@ def prepare_task(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Prepares things for the task."""
-    print("Preparing task...")
+    #print("Preparing task...")
     config_dict = dataclasses.asdict(config.CONFIG)
-    print("Configuration dictionary:", config_dict)
+    #print("Configuration dictionary:", config_dict)
     for key in config_dict:
         callback_context.state[key] = config_dict[key]
     callback_context.state["start_time"] = time.time()
     # fix randomness
     common_util.set_random_seed(callback_context.state["seed"])
     task_name = callback_context.state.get("task_name", "")
-    print("Task name:", task_name)
+    #print("Task name:", task_name)
     data_dir = callback_context.state.get("data_dir", "")
-    print("Data directory:", data_dir)
+    #print("Data directory:", data_dir)
     task_desc_path = os.path.join(data_dir, task_name, "task_description.txt")
-    print("Task description path:", task_desc_path)
+    #print("Task description path:", task_desc_path)
     with open(task_desc_path, "r", encoding="utf-8") as f:
         task_description = f.read()
     callback_context.state["task_description"] = task_description
@@ -305,17 +307,17 @@ def create_workspace(
     callback_context: callback_context_module.CallbackContext
 ) -> Optional[types.Content]:
     """Creates workspace."""
-    print("Creating workspace...")
+    #print("Creating workspace...")
     data_dir = callback_context.state.get("data_dir", "")
-    print("Data directory:", data_dir)
+    #print("Data directory:", data_dir)
     workspace_dir = callback_context.state.get("workspace_dir", "")
-    print("Workspace directory:", workspace_dir)
+    #print("Workspace directory:", workspace_dir)
     task_name = callback_context.state.get("task_name", "")
-    print("Task name:", task_name)
+    #print("Task name:", task_name)
     task_id = callback_context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     run_cwd = os.path.join(workspace_dir, task_name, task_id)
-    print("Run current working directory:", run_cwd)
+    #print("Run current working directory:", run_cwd)
     if os.path.exists(run_cwd):
       shutil.rmtree(run_cwd)
     # make required directories
@@ -343,18 +345,18 @@ def get_model_eval_agent_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the model evaluation agent instruction."""
-    print("Generating model evaluation agent instruction...")
+    #print("Generating model evaluation agent instruction...")
     task_description = context.state.get("task_description", "")
-    print("Task description:", task_description)
+    #print("Task description:", task_description)
     model_id = context.agent_name.split("_")[-1]
-    print("Model ID:", model_id)
+    #print("Model ID:", model_id)
     task_id = context.agent_name.split("_")[-2]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     model_description = context.state.get(
         f"init_{task_id}_model_{model_id}",
         {},
     ).get("model_description", "")
-    print("Model description:", model_description)
+    #print("Model description:", model_description)
     return prompt.MODEL_EVAL_INSTR.format(
         task_description=task_description,
         model_description=model_description,
@@ -365,11 +367,11 @@ def get_model_retriever_agent_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the model retriever agent instruction."""
-    print("Generating model retriever agent instruction...")
+    #print("Generating model retriever agent instruction...")
     task_summary = context.state.get("task_summary", "")
-    print("Task summary:", task_summary)
+    #print("Task summary:", task_summary)
     num_model_candidates = context.state.get("num_model_candidates", 2)
-    print("Number of model candidates:", num_model_candidates)
+    #print("Number of model candidates:", num_model_candidates)
     return prompt.MODEL_RETRIEVAL_INSTR.format(
         task_summary=task_summary,
         num_model_candidates=num_model_candidates,
@@ -380,15 +382,15 @@ def get_merger_agent_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the integrate agent instruction."""
-    print("Generating code integration agent instruction...")
+    #print("Generating code integration agent instruction...")
     reference_idx = int(context.agent_name.split("_")[-1])
-    print("Reference index:", reference_idx)
+    #print("Reference index:", reference_idx)
     task_id = context.agent_name.split("_")[-2]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     performance_results = context.state.get(f"performance_results_{task_id}", [])
-    print("Performance results:", performance_results)
+    #print("Performance results:", performance_results)
     base_solution = context.state.get(f"base_solution_{task_id}", "")
-    print("Base solution code:", base_solution)
+    #print("Base solution code:", base_solution)
     if reference_idx < len(performance_results):
         reference_solution = performance_results[reference_idx][1].replace(
             "```python", ""
@@ -405,19 +407,19 @@ def get_check_data_use_instruction(
     context: callback_context_module.ReadonlyContext,
 ) -> str:
     """Gets the check data use agent instruction."""
-    print("Generating data use check agent instruction...")
+    #print("Generating data use check agent instruction...")
     task_id = context.agent_name.split("_")[-1]
-    print("Task ID:", task_id)
+    #print("Task ID:", task_id)
     task_description = context.state.get("task_description", "")
-    print("Task description:", task_description)
+    #print("Task description:", task_description)
     code = context.state.get(f"train_code_0_{task_id}", "")
-    print("Code to check for data use:", code)
+    #print("Code to check for data use:", code)
     return prompt.CHECK_DATA_USE_INSTR.format(
         code=code,
         task_description=task_description,
     )
 
-print("Creating task summarization agent...")
+#print("Creating task summarization agent...")
 task_summarization_agent = agents.Agent(
     model=config.CONFIG.agent_model,
     name="task_summarization_agent",
@@ -430,7 +432,7 @@ task_summarization_agent = agents.Agent(
     include_contents="none",
 )
 
-print("Creating initialization parallel sub-agents...")
+#print("Creating initialization parallel sub-agents...")
 init_parallel_sub_agents = []
 for k in range(config.CONFIG.num_solutions):
     model_retriever_agent = agents.Agent(

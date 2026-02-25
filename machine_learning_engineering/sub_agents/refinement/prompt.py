@@ -1,6 +1,6 @@
 """Defines the prompts for the refinement agent."""
 
-print("Defining prompts for refinement agent...")
+#print("Defining prompts for refinement agent...")
 
 ABLATION_INSTR = """# Introduction
 - You are a Kaggle grandmaster attending a competition.
@@ -171,4 +171,4 @@ IMPLEMENT_PLAN_INSTR = """# Introduction
 - There should be no additional headings or text in your response.
 """
 
-print("Prompts for refinement agent defined.")
+#print("Prompts for refinement agent defined.")
